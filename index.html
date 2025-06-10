@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор резюме</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+         :root {
+            --primary-color: #232470;
+            --secondary-color: #2980b9;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #000000;
+            --secondary-color: #db5555;
+            --text-color: #ecf0f1;
+            --bg-color: #2c3e50;
+            --card-bg: #34495e;
+            --border-color: #4a6278;
+            --error-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-group-left {
+            justify-content: flex-start;
+        }
+        
+        .btn-group-right {
+            justify-content: flex-end;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .experience-item,
+        .education-item,
+        .skill-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-tag {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .skill-tag i {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .resume-preview {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            text-align: center;
+            color: #7f8c8d;
+            border: 2px dashed var(--border-color);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 0.5rem;
+            color: var(--primary-color);
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .drag-handle {
+            cursor: move;
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+        
+        .loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+        <h1>Конструктор резюме</h1>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Введіть дані</h2>
+
+                <div id="resume-preview" class="resume-preview">
+                    <div>
+                        <i class="fas fa-file-alt fa-3x" style="margin-bottom: 1rem;"></i>
+                        <p>Тут буде відображатися ваше резюме<br>Почніть вводити дані</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Особиста інформація</h3>
+                    <label for="name">ПІБ: <span class="tooltip">?
+                        <span class="tooltiptext">Введіть ваше повне ім'я</span>
+                    </span></label>
+                    <input type="text" id="name" required placeholder="Наприклад: Іванов Іван Іванович">
+                    <div class="error-message" id="name-error">Будь ласка, введіть ваше ім'я</div>
+
+                    <label for="email">Email: <span class="tooltip">?
+                        <span class="tooltiptext">Введіть дійсну email адресу</span>
+                    </span></label>
+                    <input type="email" id="email" required placeholder="example@email.com">
+                    <div class="error-message" id="email-error">Будь ласка, введіть коректний email</div>
+
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" placeholder="+380991234567">
+
+                    <label for="address">Адреса:</label>
+                    <input type="text" id="address" placeholder="м. Київ, вул. Прикладна, 123">
+
+                    <label for="summary">Про себе:</label>
+                    <textarea id="summary" placeholder="Коротко опишіть себе, свої цілі та професійні якості..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="btn-group btn-group-left">
+                        <button type="button" id="add-experience" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Додати досвід
+                        </button>
+                        <button type="button" id="add-education" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Додати освіту
+                        </button>
+                        <button type="button" id="add-skill" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Додати навичку
+                        </button>
+                    </div>
+
+                    <h3>Досвід роботи</h3>
+                    <div id="experience-container">
+                        <!-- Динамічно додаються поля для досвіду -->
+                    </div>
+
+                    <h3>Освіта</h3>
+                    <div id="education-container">
+                        <!-- Динамічно додаються поля для освіти -->
+                    </div>
+
+                    <h3>Навички</h3>
+                    <div id="skills-container">
+                        <!-- Динамічно додаються поля для навичок -->
+                    </div>
+                </div>
+
+                <div class="btn-group btn-group-right">
+                    <button type="button" id="generate-resume" class="btn btn-primary">
+                        <i class="fas fa-file-export"></i> Створити резюме
+                    </button>
+                    <button type="button" id="load-example" class="btn btn-secondary">
+                        <i class="fas fa-file-download"></i> Завантажити приклад
+                    </button>
+                    <button type="button" id="clear-resume" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Очистити
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Ваше резюме</h2>
+                <div id="resume-output">
+                    <div class="resume-preview">
+                        <div>
+                            <i class="fas fa-file-alt fa-3x" style="margin-bottom: 1rem;"></i>
+                            <p>Тут буде відображатися ваше резюме<br>Після заповнення форми натисніть "Створити резюме"</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-right">
+                    <button type="button" id="edit-resume" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Редагувати резюме
+                    </button>
+                    <button type="button" id="download-resume" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Завантажити PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
